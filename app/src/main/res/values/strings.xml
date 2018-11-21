@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Java 1d</string>
 
     <!-- Strings related to login -->
@@ -112,6 +112,24 @@
     <string name="create_a_session">Create a Session</string>
     <string name="code">enter code</string>
     <string name="waiting">Waiting for your friends...</string>
-    <string name="todo">TODO</string>
+    <string name="todos">TODO</string>
     <string name="waitnext">Next</string>
+    <string name="todo" tools:ignore="DuplicateDefinition">TODO</string>
+    <string name="join">join</string>
+    <string name="Price_header">Set your preferred Price range</string>
+    <string name="start_session">Start Session</string>
+    <string name="codes">12345</string>
+    <string name="into_code">Your session code is:</string>
+    <string name="_5">$5</string>
+    <string name="_10">$10</string>
+    <string name="richaf">$$$</string>
+    <string name="_25">$25</string>
+    <string name="_50">$50</string>
+    <string name="nextpart2">Next</string>
+    <string name="checkedtextview">CheckedTextView</string>
+    <string name="cuisine_1">Indian</string>
+    <string name="cuisine_2">Thai</string>
+    <string name="opt_out_of_the_cusines_you_dislike">Opt out of the cusines you dislike:</string>
+    <string name="cuisine_3">Chinese</string>
+    <string name="done_2">Done!</string>
 </resources>

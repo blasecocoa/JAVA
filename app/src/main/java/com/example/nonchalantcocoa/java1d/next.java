@@ -24,7 +24,7 @@ public class next extends AppCompatActivity {
     }
 
 
-    public void join(View view) {
+    public void join_session(View view) {
         joincode = (EditText) findViewById(R.id.joincode);
         Toast.makeText(next.this,
                 "enter session code",
@@ -39,5 +39,9 @@ public class next extends AppCompatActivity {
             }
         });
 
+    }
+    public void wait_page(View view) {
+        Intent intent = new Intent(this, Waiting.class);
+        startActivity(intent);
     }
 }

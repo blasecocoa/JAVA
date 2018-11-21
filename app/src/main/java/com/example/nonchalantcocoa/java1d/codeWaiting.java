@@ -5,15 +5,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class location extends AppCompatActivity {
+public class codeWaiting extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location);
+        setContentView(R.layout.activity_code_waiting);
     }
-    public void wait_page(View view) {
-        Intent intent = new Intent(this, codeWaiting.class);
+    public void goToPrice(View view) {
+        Intent intent = new Intent(this, Price.class);
         startActivity(intent);
     }
 }

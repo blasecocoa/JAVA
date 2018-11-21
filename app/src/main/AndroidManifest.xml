@@ -26,7 +26,10 @@
         <activity android:name=".next" />
         <activity android:name=".location" />
         <activity android:name=".Waiting" />
-        <activity android:name=".Price"></activity>
+        <activity android:name=".Price" />
+        <activity android:name=".codeWaiting" />
+        <activity android:name=".Cuisines" />
+        <activity android:name=".Result"></activity>
     </application>
 
 </manifest>
