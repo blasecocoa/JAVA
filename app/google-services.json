@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "714060139744",
+    "firebase_url": "https://eatwhere-3090c.firebaseio.com",
+    "project_id": "eatwhere-3090c",
+    "storage_bucket": "eatwhere-3090c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714060139744:android:07d14fee2faf0e2d",
+        "android_client_info": {
+          "package_name": "com.example.nonchalantcocoa.java1d"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714060139744-uqoou5kc01ro49cjon2rs8782hgb5414.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbBdwGErqtcwnIDni71Dq6IeRqCehmht4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

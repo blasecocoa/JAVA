@@ -118,7 +118,7 @@
     <string name="join">join</string>
     <string name="Price_header">Set your preferred Price range</string>
     <string name="start_session">Start Session</string>
-    <string name="codes">12345</string>
+    <string name="codes">Invalid</string>
     <string name="into_code">Your session code is:</string>
     <string name="_5">$5</string>
     <string name="_10">$10</string>
@@ -132,4 +132,5 @@
     <string name="opt_out_of_the_cusines_you_dislike">Opt out of the cusines you dislike:</string>
     <string name="cuisine_3">Chinese</string>
     <string name="done_2">Done!</string>
+    <string name="sign_out">Sign out</string>
 </resources>
