@@ -111,4 +111,7 @@
     <string name="join_a_session">Join a session</string>
     <string name="create_a_session">Create a Session</string>
     <string name="code">enter code</string>
+    <string name="waiting">Waiting for your friends...</string>
+    <string name="todo">TODO</string>
+    <string name="waitnext">Next</string>
 </resources>

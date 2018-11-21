@@ -24,7 +24,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".next" />
-        <activity android:name=".location"></activity>
+        <activity android:name=".location" />
+        <activity android:name=".Waiting" />
+        <activity android:name=".Price"></activity>
     </application>
 
 </manifest>
