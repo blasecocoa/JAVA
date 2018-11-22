@@ -40,13 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     public static String mUsername;
+    public static String hostName;
 
     public final String TAG = "Logcat";
-
-    private double location;
-    private int num_user;
-    private double radius;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void create(View view) {
 
-        Intent intent = new Intent(this, location.class);
+        Intent intent = new Intent(this, LocationActivity.class);
         startActivity(intent);
     }
 
@@ -134,14 +130,18 @@ public class MainActivity extends AppCompatActivity {
         mSessionDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean hasCode = dataSnapshot.hasChild(textEditCode.getText().toString());
+                hostName = textEditCode.getText().toString();
+                boolean hasCode = dataSnapshot.hasChild(hostName);
                 Toast.makeText(MainActivity.this,
                         "hasCode = " + hasCode,
                         Toast.LENGTH_LONG).show();
                 Log.i(TAG, "hasCode = " + hasCode);
 
                 if (hasCode) {
-                    Intent intent = new Intent(MainActivity.this, Waiting.class);
+                    // Append user_ls with current user
+                    mSessionDatabaseReference.child(hostName).child("users").child(MainActivity.mUsername).setValue(true);
+
+                    Intent intent = new Intent(MainActivity.this, WaitActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(MainActivity.this,
@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
-        detachDatabaseReadListener();
     }
 
     @Override
@@ -175,42 +174,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSignedInInitialized(String username) {
         mUsername = username;
-        attachDatabaseReadListener();
     }
 
     private void onSignOutCleanup() {
         mUsername = ANONYMOUS;
-        // TODO: Clear textEdit
-
-        detachDatabaseReadListener();
-    }
-
-    private void attachDatabaseReadListener(){
-        // TODO: 1.3 Add a childEventListener to listen to msg database
-        if (mChildEventListener == null) {
-            mChildEventListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    // TODO: Read whatever needed from database
-                }
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {}
-            };
-            mSessionDatabaseReference.addChildEventListener(mChildEventListener);
-        }
-
-    }
-
-    private void detachDatabaseReadListener(){
-        if (mChildEventListener != null) {
-            mSessionDatabaseReference.removeEventListener(mChildEventListener);
-            mChildEventListener = null;
-        }
     }
 }

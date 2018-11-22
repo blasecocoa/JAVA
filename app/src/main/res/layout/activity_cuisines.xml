@@ -4,32 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Cuisines">
-
-    <CheckBox
-        android:id="@+id/cuisine_"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:selectAllOnFocus="true"
-        android:text="@string/cuisine_2"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cuisine_1" />
-
-    <CheckBox
-        android:id="@+id/cuisine_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/cuisine_1"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cuisine_header" />
+    tools:context=".CuisineActivity">
 
     <TextView
         android:id="@+id/cuisine_header"
@@ -44,23 +19,52 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
+        android:id="@+id/cuisine_"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:selectAllOnFocus="true"
+        android:text="@string/cuisine_2"
+        android:textSize="18sp"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cuisine_1" />
+
+    <CheckBox
+        android:id="@+id/cuisine_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/cuisine_1"
+        android:textSize="18sp"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cuisine_header" />
+
+
+    <CheckBox
         android:id="@+id/Cuisine_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="@string/cuisine_3"
         android:textSize="18sp"
+        android:checked="true"
         app:layout_constraintStart_toStartOf="@+id/cuisine_"
         app:layout_constraintTop_toBottomOf="@+id/cuisine_" />
 
     <Button
-        android:id="@+id/done_2"
+        android:id="@+id/set_cuisine_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:onClick="goToResult"
+        android:onClick="go_to_wait_cuisine"
         android:text="@string/done_2"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,16 +1,12 @@
 package com.example.nonchalantcocoa.java1d;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
+import java.util.Map;
 
-public class Cuisines extends AppCompatActivity {
+public class Cuisines {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cuisines);
+    public Map<String,Boolean> cuisines;
+
+    public Cuisines(Map<String, Boolean> cuisines) {
+        this.cuisines = cuisines;
     }
-
 }
