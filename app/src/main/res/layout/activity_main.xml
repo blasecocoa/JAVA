@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/create" />
 
     <EditText
-        android:id="@+id/joincode"
+        android:id="@+id/textEditCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -67,8 +67,8 @@
         android:layout_marginTop="8dp"
         android:contentDescription="@string/todo"
         app:layout_constraintEnd_toStartOf="@+id/join_session"
-        app:layout_constraintStart_toStartOf="@+id/joincode"
-        app:layout_constraintTop_toBottomOf="@+id/joincode"
+        app:layout_constraintStart_toStartOf="@+id/textEditCode"
+        app:layout_constraintTop_toBottomOf="@+id/textEditCode"
         app:srcCompat="@drawable/images" />
 
     <Button
@@ -84,8 +84,8 @@
         android:onClick="wait_page"
         android:text="@string/join"
         android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@+id/joincode"
+        app:layout_constraintEnd_toEndOf="@+id/textEditCode"
         app:layout_constraintStart_toEndOf="@+id/join_session"
-        app:layout_constraintTop_toBottomOf="@+id/joincode" />
+        app:layout_constraintTop_toBottomOf="@+id/textEditCode" />
 
 </android.support.constraint.ConstraintLayout>

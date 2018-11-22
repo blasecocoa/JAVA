@@ -1,7 +1,6 @@
 package com.example.nonchalantcocoa.java1d;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -28,11 +24,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText joincode;
+    private EditText textEditCode;
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
 
@@ -43,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     public static String mUsername;
+
+    public final String TAG = "Logcat";
 
     private double location;
     private int num_user;
@@ -59,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
         mSessionDatabaseReference = mFirebaseDatabase.getReference().child("Sessions");
 
+        textEditCode =findViewById(R.id.textEditCode);
+
         // TODO: 1.4 Add a AuthStateListener & attach it in onResume()
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                     // user is signed in
                     Toast.makeText(MainActivity.this, "You are now signed in.", Toast.LENGTH_SHORT).show();
                     onSignedInInitialized(user.getDisplayName());
+
 
                 } else {
                     //user is signed out
@@ -115,33 +117,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void join_session(View view) {
-        joincode = (EditText) findViewById(R.id.joincode);
-        Toast.makeText(MainActivity.this,
-                "enter session code",
-                Toast.LENGTH_LONG).show();
-        joincode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        textEditCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE) {
-                    // Check if the session exist
-//                    mFirebaseAuth.createUserWithEmailAndPassword(joincode.getText().toString(),"123")
-//                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<AuthResult> task) {
-//                                    if(task.isSuccessful()){
-//                                        //User registered successfully
-//                                    }else{
-//                                        Toast.makeText(MainActivity.this,
-//                                                "Ask your host for session code PLS",
-//                                                Toast.LENGTH_LONG).show();
-//                                    }
-//                                }
-//                            });
+                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                     return true;
-                } else if (id == EditorInfo.IME_NULL) {
-                    Toast.makeText(MainActivity.this,
-                            "Ask your host for session code PLS",
-                            Toast.LENGTH_LONG).show();
                 }
                 return false;
             }
@@ -149,8 +129,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void wait_page(View view) {
-        Intent intent = new Intent(this, Waiting.class);
-        startActivity(intent);
+        // Check if the session exist
+
+        mSessionDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean hasCode = dataSnapshot.hasChild(textEditCode.getText().toString());
+                Toast.makeText(MainActivity.this,
+                        "hasCode = " + hasCode,
+                        Toast.LENGTH_LONG).show();
+                Log.i(TAG, "hasCode = " + hasCode);
+
+                if (hasCode) {
+                    Intent intent = new Intent(MainActivity.this, Waiting.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            "Session does not exist",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
+        detachDatabaseReadListener();
     }
 
     @Override
