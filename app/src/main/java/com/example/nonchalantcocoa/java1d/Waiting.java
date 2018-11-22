@@ -20,5 +20,9 @@ public class Waiting extends AppCompatActivity {
         Intent intent = new Intent(this,Cuisines.class);
         startActivity(intent);
     }
+    public void goToResults(View view) {
+        Intent intent = new Intent(this,Result.class);
+        startActivity(intent);
+    }
 
 }

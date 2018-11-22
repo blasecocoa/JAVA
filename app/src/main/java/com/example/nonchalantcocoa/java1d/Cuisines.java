@@ -12,8 +12,5 @@ public class Cuisines extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cuisines);
     }
-    public void goToResult(View view) {
-        Intent intent = new Intent(this, Result.class);
-        startActivity(intent);
-    }
+
 }
