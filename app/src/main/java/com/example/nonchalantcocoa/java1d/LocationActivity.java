@@ -287,29 +287,6 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_scrolling, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sign_out_menu:
-                // sign out
-                AuthUI.getInstance().signOut(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();

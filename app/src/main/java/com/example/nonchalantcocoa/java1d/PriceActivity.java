@@ -33,25 +33,6 @@ public class PriceActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_scrolling, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sign_out_menu:
-                // sign out
-                AuthUI.getInstance().signOut(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     public void go_to_wait_price(View view) {
         // Get price range from seekBar
         int minPrice = seekBar.getSecondaryProgress() + 5;
