@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +19,7 @@ public class PriceActivity extends AppCompatActivity {
     private DatabaseReference mHostDatabaseReference;
 
     private Price price;
+    private SeekBar seekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,8 @@ public class PriceActivity extends AppCompatActivity {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName);
+
+        seekBar = findViewById(R.id.seekBar);
 
     }
 
@@ -49,8 +53,11 @@ public class PriceActivity extends AppCompatActivity {
     }
 
     public void go_to_wait_price(View view) {
+        // Get price range from seekBar
+        int minPrice = seekBar.getSecondaryProgress() + 5;
+        int maxPrice = seekBar.getProgress() * 5;
         // push a Price object
-        price = new Price(5,15);
+        price = new Price(maxPrice,minPrice);
         mHostDatabaseReference.child("price").child(MainActivity.mUsername + "_price").setValue(price);
         Intent intent = new Intent(this, WaitPriceActivity.class);
         startActivity(intent);
