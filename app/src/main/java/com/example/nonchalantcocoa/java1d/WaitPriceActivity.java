@@ -27,7 +27,11 @@ public class WaitPriceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wait_price);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mGoToCuisineDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName).child("go_to_cuisine");
+        mGoToCuisineDatabaseReference = mFirebaseDatabase.getReference()
+                .child("Sessions")
+                .child(MainActivity.hostName)
+                .child("signal")
+                .child("go_to_cuisine");
 
         attachDatabaseReadListener();
     }

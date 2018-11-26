@@ -59,7 +59,7 @@ public class HostWaitActivity extends AppCompatActivity {
 
     public void goToPrice(View view) {
         // send a start signal to database & go to PriceActivity
-        mSessionDatabaseReference.child(MainActivity.hostName).child("start").setValue(true);
+        mSessionDatabaseReference.child(MainActivity.hostName).child("signal").child("start").setValue(true);
         Intent intent = new Intent(this, PriceActivity.class);
         startActivity(intent);
     }

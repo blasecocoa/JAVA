@@ -33,7 +33,7 @@ public class WaitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wait);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mStartDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName).child("start");
+        mStartDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName).child("signal").child("start");
 
         attachDatabaseReadListener();
 

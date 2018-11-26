@@ -108,7 +108,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                 location = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
                 users = new HashMap<String,Boolean>();
                 users.put(MainActivity.mUsername,true);
-                radius = radiusBar.getProgress();
+                radius = radiusBar.getProgress() / 5.0;
 
                 Host host = new Host(location, users, radius);
                 mSessionDatabaseReference.child(MainActivity.mUsername).setValue(host);

@@ -29,9 +29,10 @@ public class WaitCuisineActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mGoToResultDatabaseReference =
                 mFirebaseDatabase.getReference()
-                .child("Sessions")
-                .child(MainActivity.hostName)
-                .child("go_to_result");
+                        .child("Sessions")
+                        .child(MainActivity.hostName)
+                        .child("signal")
+                        .child("go_to_result");
 
         attachDatabaseReadListener();
     }
