@@ -3,7 +3,6 @@ package com.example.nonchalantcocoa.java1d;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 public class CheckBoxAdapter extends ArrayAdapter<Cuisine> {
 
-    // sparse boolean array for checking the state of the items
+    // Map for checking the state of the items
     private Map itemStateMap= new HashMap<String,Boolean>();
 
     public CheckBoxAdapter(Context context, int resource, List<Cuisine> objects) {

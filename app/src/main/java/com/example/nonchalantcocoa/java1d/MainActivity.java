@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     public static String mUsername;
-    public static String hostName;
+    private static String hostName;
 
     public final String TAG = "Logcat";
 
@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
     }
     public void wait_page(View view) {
         // Check if the session exist
-
         mSessionDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -138,8 +137,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "hasCode = " + hasCode);
 
                 if (hasCode) {
+                    // Set hostName in Globals
+                    Globals g = Globals.getInstance();
+                    g.setHostName(hostName);
                     // Append user_ls with current user
-                    mSessionDatabaseReference.child(hostName).child("users").child(MainActivity.mUsername).setValue(true);
+                    mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
 
                     Intent intent = new Intent(MainActivity.this, WaitActivity.class);
                     startActivity(intent);

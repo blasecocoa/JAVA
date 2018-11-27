@@ -78,4 +78,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView9" />
 
+    <Button
+        android:id="@+id/goMainButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go Back Main Page"/>
+
+    <Button
+        android:id="@+id/nextChoiceButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Not this one"/>
+
 </android.support.constraint.ConstraintLayout>

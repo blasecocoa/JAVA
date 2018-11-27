@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +37,8 @@ public class CuisineActivity extends AppCompatActivity {
 
     private ChildEventListener mChildEventListener;
 
+    private boolean allowBack = false;
+
 
     private Button setCuisineButton;
 
@@ -44,10 +47,11 @@ public class CuisineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cuisines);
 
+        Globals g = Globals.getInstance();
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName);
-        mAvaCuisineDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName).child("ava_cuisines");
+        mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName());
+        mAvaCuisineDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("ava_cuisines");
 
         cuisineListView = (ListView) findViewById(R.id.cuisineListView);
         cuisineListView.setVisibility(View.VISIBLE);
@@ -128,5 +132,16 @@ public class CuisineActivity extends AppCompatActivity {
         super.onPause();
         detachDatabaseReadListener();
         checkBoxAdapter.clear();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!allowBack) {
+            Toast.makeText(this,
+                    "Not allowed to go back",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

@@ -89,4 +89,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/code" />
 
+    <TextView
+        android:id="@+id/numOfPplTextView"
+        android:layout_width="199dp"
+        android:layout_height="25dp"
+        android:text="Number Of People: Unknown"/>
+
 </android.support.constraint.ConstraintLayout>

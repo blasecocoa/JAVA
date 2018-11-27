@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -20,20 +21,35 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
+
 public class WaitActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mStartDatabaseReference;
+    private DatabaseReference mUsersDatabaseReference;
 
     private ValueEventListener mValueEventListener;
+    private ValueEventListener usersEventListener;
+
+    private int numOfPpl;
+
+    TextView numOfPplTextView;
+
+    Globals g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait);
 
+        g = Globals.getInstance();
+
+        numOfPplTextView = findViewById(R.id.numOfPplTextView);
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mStartDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName).child("signal").child("start");
+        mStartDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("signal").child("start");
+        mUsersDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("users");
 
         attachDatabaseReadListener();
 
@@ -47,10 +63,6 @@ public class WaitActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     boolean start = (boolean) dataSnapshot.getValue();
-                    Toast.makeText(WaitActivity.this,
-                            "start = " + start,
-                            Toast.LENGTH_LONG).show();
-
                     if (start) {
                         // go to PriceActivity
                         Intent intent = new Intent(WaitActivity.this, PriceActivity.class);
@@ -63,7 +75,30 @@ public class WaitActivity extends AppCompatActivity {
 
                 }
             };
-            mStartDatabaseReference.addValueEventListener(mValueEventListener);
+            mStartDatabaseReference.addValueEventListener(mValueEventListener); // Listen to start signal
+
+        }
+
+        if (usersEventListener == null) {
+            // Create a listener to check the users list
+            usersEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    try {
+                        Map<String, Boolean> users = (Map<String, Boolean>) dataSnapshot.getValue();
+                        numOfPpl = users.size();
+                        numOfPplTextView.setText("Number of People: "+String.valueOf(numOfPpl));
+                    } catch (RuntimeException ex) {
+                        ex.printStackTrace();
+                        Log.i("Logcat","Cannot count number of ppl");
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            mUsersDatabaseReference.addValueEventListener(usersEventListener); // Listen to num of ppl
         }
 
     }
@@ -72,6 +107,10 @@ public class WaitActivity extends AppCompatActivity {
         if (mValueEventListener != null) {
             mStartDatabaseReference.removeEventListener(mValueEventListener);
             mValueEventListener = null;
+        }
+        if (usersEventListener != null) {
+            mUsersDatabaseReference.removeEventListener(usersEventListener);
+            usersEventListener = null;
         }
     }
 

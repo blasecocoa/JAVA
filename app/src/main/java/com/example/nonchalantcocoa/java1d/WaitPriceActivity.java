@@ -21,15 +21,20 @@ public class WaitPriceActivity extends AppCompatActivity {
 
     private ValueEventListener mValueEventListener;
 
+    private boolean allowBack = false;
+
+    Globals g;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_price);
+        g = Globals.getInstance();
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mGoToCuisineDatabaseReference = mFirebaseDatabase.getReference()
                 .child("Sessions")
-                .child(MainActivity.hostName)
+                .child(g.getHostName())
                 .child("signal")
                 .child("go_to_cuisine");
 
@@ -44,9 +49,6 @@ public class WaitPriceActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     boolean go_to_cuisine = (boolean) dataSnapshot.getValue();
-                    Toast.makeText(WaitPriceActivity.this,
-                            "go_to_cuisine = " + go_to_cuisine,
-                            Toast.LENGTH_LONG).show();
 
                     if (go_to_cuisine) {
                         // go to CuisineActivity
@@ -76,5 +78,16 @@ public class WaitPriceActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         detachDatabaseReadListener();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!allowBack) {
+            Toast.makeText(this,
+                    "Not allowed to go back",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

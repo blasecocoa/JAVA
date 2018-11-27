@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.database.DatabaseReference;
@@ -20,14 +21,19 @@ public class PriceActivity extends AppCompatActivity {
 
     private Price price;
     private SeekBar seekBar;
+    private boolean allowBack = false;
+
+    Globals g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_price);
 
+        g = Globals.getInstance();
+
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(MainActivity.hostName);
+        mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName());
 
         seekBar = findViewById(R.id.seekBar);
 
@@ -42,5 +48,16 @@ public class PriceActivity extends AppCompatActivity {
         mHostDatabaseReference.child("price").child(MainActivity.mUsername + "_price").setValue(price);
         Intent intent = new Intent(this, WaitPriceActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!allowBack) {
+            Toast.makeText(this,
+                    "Not allowed to go back",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

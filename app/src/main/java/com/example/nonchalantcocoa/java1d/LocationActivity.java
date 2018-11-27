@@ -74,6 +74,8 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
+    public static String hostName;
+
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
@@ -84,6 +86,8 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
+
+    private static long idCounter = 100;
 
     EditText mapSearchBox;
 
@@ -98,20 +102,23 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         radiusBar = findViewById(R.id.bar_radius);
         locationNextButton = findViewById(R.id.location_next_button);
 
-        // Set hostname for host
-        MainActivity.hostName = MainActivity.mUsername;
 
         locationNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: Let user choose a location (Currently only send the current location to Firebase)
+
+                hostName = MainActivity.mUsername.toUpperCase().replaceAll("\\s+","") + createID();
+                // Set global variable hostName as current userName
+                Globals g = Globals.getInstance();
+                g.setHostName(hostName); //formated hostName
                 location = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
                 users = new HashMap<String,Boolean>();
                 users.put(MainActivity.mUsername,true);
                 radius = radiusBar.getProgress() / 5.0;
 
                 Host host = new Host(location, users, radius);
-                mSessionDatabaseReference.child(MainActivity.mUsername).setValue(host);
+                mSessionDatabaseReference.child(g.getHostName()).setValue(host);
                 Intent intent = new Intent(LocationActivity.this, HostWaitActivity.class);
                 startActivity(intent);
             }
@@ -153,6 +160,10 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 //        });
 
 
+    }
+    public static synchronized String createID()
+    {
+        return String.valueOf(idCounter++);
     }
 
 //    private class SearchClicked extends AsyncTask<Void, Void, Boolean> {
