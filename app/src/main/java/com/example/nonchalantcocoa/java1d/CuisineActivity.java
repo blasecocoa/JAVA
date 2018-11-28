@@ -30,8 +30,6 @@ public class CuisineActivity extends AppCompatActivity {
     private DatabaseReference mHostDatabaseReference;
     private DatabaseReference mAvaCuisineDatabaseReference;
 
-    private Cuisines cuisinesObj;
-
     private ListView cuisineListView;
     private CheckBoxAdapter checkBoxAdapter;
 
@@ -51,7 +49,7 @@ public class CuisineActivity extends AppCompatActivity {
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName());
-        mAvaCuisineDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("ava_cuisines");
+        mAvaCuisineDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("avaCuisineList");
 
         cuisineListView = (ListView) findViewById(R.id.cuisineListView);
         cuisineListView.setVisibility(View.VISIBLE);
@@ -67,7 +65,7 @@ public class CuisineActivity extends AppCompatActivity {
         avaCuisinesList.add(new Cuisine("Indian"));
         avaCuisinesList.add(new Cuisine("Chinese"));
         avaCuisinesList.add(new Cuisine("Thai"));
-        mHostDatabaseReference.child("ava_cuisines").setValue(avaCuisinesList);
+        mHostDatabaseReference.child("avaCuisineList").setValue(avaCuisinesList);
         //////////////////////////////////////////////////////////////////////////////////
 
         attachDatabaseReadListener();
@@ -80,9 +78,8 @@ public class CuisineActivity extends AppCompatActivity {
             public void onClick(View v) {// create a Cuisine object
                 Map<String,Boolean> cuisinesMap = checkBoxAdapter.getItemStateMap();
                 // TODO: get checkbox values in a loop
-                cuisinesObj = new Cuisines(cuisinesMap);
                 // push the Cuisine object
-                mHostDatabaseReference.child("cuisines").child(MainActivity.mUsername + "_cuisines").setValue(cuisinesObj);
+                mHostDatabaseReference.child("cuisineList").child(MainActivity.mUsername + "_cuisines").setValue(cuisinesMap);
                 // go to wait_cuisine page
                 Intent intent = new Intent(CuisineActivity.this, WaitCuisineActivity.class);
                 startActivity(intent);

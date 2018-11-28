@@ -45,7 +45,7 @@ public class PriceActivity extends AppCompatActivity {
         int maxPrice = seekBar.getProgress() * 5;
         // push a Price object
         price = new Price(maxPrice,minPrice);
-        mHostDatabaseReference.child("price").child(MainActivity.mUsername + "_price").setValue(price);
+        mHostDatabaseReference.child("priceList").child(MainActivity.mUsername + "_price").setValue(price);
         Intent intent = new Intent(this, WaitPriceActivity.class);
         startActivity(intent);
     }

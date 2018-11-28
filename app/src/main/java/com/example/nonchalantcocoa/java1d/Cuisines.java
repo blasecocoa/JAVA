@@ -9,4 +9,7 @@ public class Cuisines {
     public Cuisines(Map<String, Boolean> cuisines) {
         this.cuisines = cuisines;
     }
+    public Cuisines() {
+        this.cuisines = cuisines;
+    }
 }

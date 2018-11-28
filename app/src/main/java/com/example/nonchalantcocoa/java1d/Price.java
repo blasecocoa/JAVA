@@ -8,4 +8,9 @@ public class Price {
         this.maxPrice = maxPrice;
         this.minPrice = minPrice;
     }
+
+    public Price(){ // dumb Price constructor
+        this.maxPrice = 0;
+        this.minPrice = 0;
+    }
 }
