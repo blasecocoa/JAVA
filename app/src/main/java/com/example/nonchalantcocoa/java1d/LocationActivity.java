@@ -3,6 +3,7 @@ package com.example.nonchalantcocoa.java1d;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -21,15 +22,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,7 +40,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,7 +60,13 @@ import java.util.Map;
 //import com.google.android.maps.GeoPoint;
 
 
-public class LocationActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class LocationActivity extends AppCompatActivity implements OnMapReadyCallback,
+        GoogleApiClient.OnConnectionFailedListener {
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 
     MapView mapView;
     private GoogleMap mMap;
@@ -65,15 +77,12 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
     private SeekBar radiusBar;
     private Button locationNextButton;
+    private TextView radiusTextView;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mSessionDatabaseReference;
 
     public final String TAG = "Logcat";
-
-    // The entry points to the Places API.
-    private GeoDataClient mGeoDataClient;
-    private PlaceDetectionClient mPlaceDetectionClient;
 
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -83,17 +92,24 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 17;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
+    private Circle circle;
 
     private static long idCounter = 100;
 
-    EditText mapSearchBox;
+    AutoCompleteTextView mapSearchBox;
+
+    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
+    private GoogleApiClient mGoogleApiClient;
+    public static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
+            new LatLng(1.1794, 103.8), new LatLng(1.5089, 103.797)
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +121,31 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
         radiusBar = findViewById(R.id.bar_radius);
         locationNextButton = findViewById(R.id.location_next_button);
+        radiusTextView = findViewById(R.id.radiusTextView);
 
+        radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+             @Override
+             public void onStopTrackingTouch(SeekBar seekBar) {
+                 // TODO Auto-generated method stub
+             }
+
+             @Override
+             public void onStartTrackingTouch(SeekBar seekBar) {
+                 // TODO Auto-generated method stub
+             }
+
+             @Override
+             public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
+                 // TODO Auto-generated method stub
+                 radius = radiusBar.getProgress() + 150;
+                 circle.setRadius(radius);
+                 radiusTextView.setText(String.valueOf(radius));
+//                 t1.setTextSize(progress);
+//                 Toast.makeText(getApplicationContext(), String.valueOf(progress),Toast.LENGTH_LONG).show();
+
+             }
+         }
+        );
 
         locationNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,21 +173,25 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(this);
-
-        // Construct a PlaceDetectionClient.
-        mPlaceDetectionClient = Places.getPlaceDetectionClient(this);
-
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        mapSearchBox = (EditText) findViewById(R.id.search);
+        mapSearchBox = (AutoCompleteTextView) findViewById(R.id.search);
 
 
 
     }
     public void init(){
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient,
+                LAT_LNG_BOUNDS, null);
+        mapSearchBox.setAdapter(mPlaceAutocompleteAdapter);
+
         mapSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH ||
@@ -198,88 +242,41 @@ public void hideSoftkeyboard(){
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
-
-        setOnCameraMovelisterner(mMap);
-        mMap.getUiSettings().isMyLocationButtonEnabled();
-        mMap.getUiSettings().isZoomControlsEnabled();
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+        updateLocationUI();
+        setOnCameraMovelisterner(mMap);
+            // Get the current location of the device and set the position of the map.
 
     }
     public void setOnCameraMovelisterner(final GoogleMap map){
-        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                if (currentLocationMarker != null) {
-                    currentLocationMarker.remove();
-                }
-                mLastKnownLocation.setLatitude( mMap.getCameraPosition().target.latitude);
-                mLastKnownLocation.setLongitude( mMap.getCameraPosition().target.longitude);
-                String snippet = String.format(Locale.getDefault(),
-                        "Lat: %1$.5f, Long: %2$.5f",
-                        mLastKnownLocation.getLatitude(),
-                        mLastKnownLocation.getLongitude());
-                currentLocationMarker= mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(mLastKnownLocation.getLatitude(),
-                                mLastKnownLocation.getLongitude()))
-                        .title("HERE?")
-                        .snippet(snippet));
-            }
+                map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+                    @Override
+                    public void onCameraMove() {
+                        if (currentLocationMarker != null) {
+                            currentLocationMarker.remove();
+                        }
+                        if (mLastKnownLocation != null) {
+                            mLastKnownLocation.setLatitude( mMap.getCameraPosition().target.latitude);
+                            mLastKnownLocation.setLongitude( mMap.getCameraPosition().target.longitude);
+                            circle.setCenter(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()));
+                            String snippet = String.format(Locale.getDefault(),
+                                    "Lat: %1$.5f, Long: %2$.5f",
+                                    mLastKnownLocation.getLatitude(),
+                                    mLastKnownLocation.getLongitude());
+                            currentLocationMarker= mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(mLastKnownLocation.getLatitude(),
+                                            mLastKnownLocation.getLongitude()))
+                                    .title("HERE?")
+                                    .snippet(snippet));
+                        }
+                        else{
+                            Log.e(TAG, "mLastKnownLocation is null");
+
+                        }
+                    }
 
         });
-//        map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-//            @Override
-//            public void onCameraMoveStarted(int i) {
-//                currentLocationMarker.remove();
-//                mLastKnownLocation.setLatitude( mMap.getCameraPosition().target.latitude);
-//                mLastKnownLocation.setLongitude( mMap.getCameraPosition().target.longitude);
-//            }
-//        });
-//        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-//            @Override
-//            public void onCameraMove() {
-//                mLastKnownLocation.setLatitude( mMap.getCameraPosition().target.latitude);
-//                mLastKnownLocation.setLongitude( mMap.getCameraPosition().target.longitude);
-//            }
-//        });
     }
-//    public void setOnMarkerDragListener(final GoogleMap map){
-//        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-//            @Override
-//            public void onMarkerDragStart(Marker marker) {
-//
-//            }
-//
-//            @Override
-//            public void onMarkerDrag(Marker marker) {
-//
-//            }
-//
-//            @Override
-//            public void onMarkerDragEnd(Marker marker) {
-//                marker.getPosition();
-//            }
-//        });
-//    }
-//    public void setMapLongClick(final GoogleMap map) {
-//        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-//            @Override
-//            public void onMapLongClick(LatLng latLng) {
-//                String snippet = String.format(Locale.getDefault(),
-//                        "Lat: %1$.5f, Long: %2$.5f",
-//                        latLng.latitude,
-//                        latLng.longitude);
-//
-//                map.addMarker(new MarkerOptions()
-//                        .position(latLng)
-//                        .title("hi")
-//                        .snippet(snippet));
-//            }
-//
-//        });
-//
-//    }
     private void updateLocationUI() {
         if (mMap == null) {
             return;
@@ -295,7 +292,7 @@ public void hideSoftkeyboard(){
                 getLocationPermission();
             }
         } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -327,6 +324,7 @@ public void hideSoftkeyboard(){
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                    getDeviceLocation();
                 }
             }
         }
@@ -360,6 +358,11 @@ public void hideSoftkeyboard(){
                                     .title("HERE?")
                                     .snippet(snippet));
                             init();
+                            circle = mMap.addCircle(new CircleOptions()
+                                    .center(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()))
+                                    .radius(150)
+                                    .strokeWidth(0)
+                                    .fillColor(0x220000FF));
 
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");

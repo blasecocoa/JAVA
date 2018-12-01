@@ -32,6 +32,12 @@
         tools:layout_editor_absoluteX="50dp"
         tools:layout_editor_absoluteY="19dp" />
 
+    <TextView
+        android:id="@+id/radiusTextView"
+        android:text="radius"
+        android:layout_width="228dp"
+        android:layout_height="24dp"/>
+
     <SeekBar
         android:id="@+id/bar_radius"
         android:layout_width="283dp"
@@ -42,6 +48,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:scrollbarSize="20dp"
+        android:max="850"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,12 +64,13 @@
         tools:layout_editor_absoluteX="50dp"
         tools:layout_editor_absoluteY="386dp" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/search"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:hint="Enter Address, City or Zip Code"
-        android:imeOptions="actionSearch"
+        android:imeOptions="actionGo"
+        android:inputType="text"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="50dp"
         tools:layout_editor_absoluteY="386dp" />
