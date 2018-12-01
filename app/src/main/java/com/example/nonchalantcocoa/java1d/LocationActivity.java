@@ -36,13 +36,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -54,7 +58,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
     MapView mapView;
     private GoogleMap mMap;
-
+    private Marker currentLocationMarker;
     private LatLng location;
     private Map users;
     private double radius;
@@ -138,82 +142,144 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-//        mapSearchBox = (EditText) findViewById(R.id.search);
-//        mapSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-//                        actionId == EditorInfo.IME_ACTION_DONE ||
-//                        actionId == EditorInfo.IME_ACTION_GO ||
-//                        event.getAction() == KeyEvent.ACTION_DOWN &&
-//                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-//
-//                    // hide virtual keyboard
-//                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    imm.hideSoftInputFromWindow(mapSearchBox.getWindowToken(), 0);
-//
-//                    new SearchClicked(mapSearchBox.getText().toString()).execute();
-//                    mapSearchBox.setText("", TextView.BufferType.EDITABLE);
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
+        mapSearchBox = (EditText) findViewById(R.id.search);
+
 
 
     }
+    public void init(){
+        mapSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        actionId == EditorInfo.IME_ACTION_DONE ||
+                        actionId == EditorInfo.IME_ACTION_GO ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    Log.e(TAG, "You pressed ENTER");
+
+                    // hide virtual keyboard
+                    geoLocate();
+                }
+                return false;
+            }
+        });
+    }
+    public void geoLocate(){
+        String searchString=mapSearchBox.getText().toString();
+        Geocoder geocoder= new Geocoder(LocationActivity.this);
+        List<Address> list= new ArrayList<>();
+        try{
+            list=geocoder.getFromLocationName(searchString,1);
+        }catch(IOException e){
+            Log.e(TAG,"geoLocate:IOexception:"+e.getMessage());
+        }
+        if(list.size()>0){
+            Address address=list.get(0);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(address.getLatitude(),
+                            address.getLongitude()), DEFAULT_ZOOM));
+            hideSoftkeyboard();
+        }
+    }
+public void hideSoftkeyboard(){
+    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mapSearchBox.getWindowToken(), 0);
+}
     public static synchronized String createID()
     {
         return String.valueOf(idCounter++);
     }
 
-//    private class SearchClicked extends AsyncTask<Void, Void, Boolean> {
-//        private String toSearch;
-//        private Address address;
-//
-//        public SearchClicked(String toSearch) {
-//            this.toSearch = toSearch;
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... voids) {
-//
-//            try {
-//                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.UK);
-//                List<Address> results = geocoder.getFromLocationName(toSearch, 1);
-//
-//                if (results.size() == 0) {
-//                    return false;
-//                }
-//
-//                address = results.get(0);
-//
-//                // Now do something with this GeoPoint:
-////                GeoPoint p = new GeoPoint((int) (address.getLatitude() * 1E6), (int) (address.getLongitude() * 1E6));
-//
-//            } catch (Exception e) {
-//                Log.e("", "Something went wrong: ", e);
-//                return false;
-//            }
-//            return true;
-//        }
-//    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
-        // Get the current location of the device and set the position of the map.
+        setOnCameraMovelisterner(mMap);
+        mMap.getUiSettings().isMyLocationButtonEnabled();
+        mMap.getUiSettings().isZoomControlsEnabled();
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-    }
 
+    }
+    public void setOnCameraMovelisterner(final GoogleMap map){
+        map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                if (currentLocationMarker != null) {
+                    currentLocationMarker.remove();
+                }
+                mLastKnownLocation.setLatitude( mMap.getCameraPosition().target.latitude);
+                mLastKnownLocation.setLongitude( mMap.getCameraPosition().target.longitude);
+                String snippet = String.format(Locale.getDefault(),
+                        "Lat: %1$.5f, Long: %2$.5f",
+                        mLastKnownLocation.getLatitude(),
+                        mLastKnownLocation.getLongitude());
+                currentLocationMarker= mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(mLastKnownLocation.getLatitude(),
+                                mLastKnownLocation.getLongitude()))
+                        .title("HERE?")
+                        .snippet(snippet));
+            }
+
+        });
+//        map.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+//            @Override
+//            public void onCameraMoveStarted(int i) {
+//                currentLocationMarker.remove();
+//                mLastKnownLocation.setLatitude( mMap.getCameraPosition().target.latitude);
+//                mLastKnownLocation.setLongitude( mMap.getCameraPosition().target.longitude);
+//            }
+//        });
+//        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+//            @Override
+//            public void onCameraMove() {
+//                mLastKnownLocation.setLatitude( mMap.getCameraPosition().target.latitude);
+//                mLastKnownLocation.setLongitude( mMap.getCameraPosition().target.longitude);
+//            }
+//        });
+    }
+//    public void setOnMarkerDragListener(final GoogleMap map){
+//        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+//            @Override
+//            public void onMarkerDragStart(Marker marker) {
+//
+//            }
+//
+//            @Override
+//            public void onMarkerDrag(Marker marker) {
+//
+//            }
+//
+//            @Override
+//            public void onMarkerDragEnd(Marker marker) {
+//                marker.getPosition();
+//            }
+//        });
+//    }
+//    public void setMapLongClick(final GoogleMap map) {
+//        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+//            @Override
+//            public void onMapLongClick(LatLng latLng) {
+//                String snippet = String.format(Locale.getDefault(),
+//                        "Lat: %1$.5f, Long: %2$.5f",
+//                        latLng.latitude,
+//                        latLng.longitude);
+//
+//                map.addMarker(new MarkerOptions()
+//                        .position(latLng)
+//                        .title("hi")
+//                        .snippet(snippet));
+//            }
+//
+//        });
+//
+//    }
     private void updateLocationUI() {
         if (mMap == null) {
             return;
@@ -284,6 +350,17 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            String snippet = String.format(Locale.getDefault(),
+                                    "Lat: %1$.5f, Long: %2$.5f",
+                                    mLastKnownLocation.getLatitude(),
+                                    mLastKnownLocation.getLongitude());
+                            currentLocationMarker= mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(mLastKnownLocation.getLatitude(),
+                                            mLastKnownLocation.getLongitude()))
+                                    .title("HERE?")
+                                    .snippet(snippet));
+                            init();
+
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());

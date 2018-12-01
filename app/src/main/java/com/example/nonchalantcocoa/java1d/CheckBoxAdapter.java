@@ -12,12 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CheckBoxAdapter extends ArrayAdapter<Cuisine> {
+public class CheckBoxAdapter extends ArrayAdapter<String> {
 
     // Map for checking the state of the items
     private Map itemStateMap= new HashMap<String,Boolean>();
 
-    public CheckBoxAdapter(Context context, int resource, List<Cuisine> objects) {
+    public CheckBoxAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
     }
 
@@ -30,19 +30,19 @@ public class CheckBoxAdapter extends ArrayAdapter<Cuisine> {
 
         final CheckBox cuisineCheckBox = (CheckBox) convertView.findViewById(R.id.cuisineCheckBox);
 
-        final Cuisine currentCuisine = getItem(position);
+        final String currentCuisine = getItem(position);
         if (currentCuisine != null){
             cuisineCheckBox.setVisibility(View.VISIBLE);
-            Log.i("Logcat", "Adapter set visibility: " + currentCuisine.getText());
-            cuisineCheckBox.setText(currentCuisine.getText());
+            Log.i("Logcat", "Adapter set visibility: " + currentCuisine);
+            cuisineCheckBox.setText(currentCuisine);
             cuisineCheckBox.setChecked(true);
-            itemStateMap.put(currentCuisine.getText(), true);
+            itemStateMap.put(currentCuisine, true);
 
             cuisineCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemStateMap.put(currentCuisine.getText(), cuisineCheckBox.isChecked());
-                    Log.i("Logcat", "Set " + currentCuisine.getText() + " to " + cuisineCheckBox.isChecked());
+                    itemStateMap.put(currentCuisine, cuisineCheckBox.isChecked());
+                    Log.i("Logcat", "Set " + currentCuisine + " to " + cuisineCheckBox.isChecked());
                 }
             });
         }

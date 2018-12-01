@@ -55,16 +55,16 @@ public class CuisineActivity extends AppCompatActivity {
         cuisineListView.setVisibility(View.VISIBLE);
 
         // Initialize message ListView and its adapter
-        List<Cuisine> cuisineList = new ArrayList<>();
+        List<String> cuisineList = new ArrayList<>();
         checkBoxAdapter = new CheckBoxAdapter(CuisineActivity.this, R.layout.item_cuisine, cuisineList);
         checkBoxAdapter.notifyDataSetChanged();
         cuisineListView.setAdapter(checkBoxAdapter);
 
         //////// Temporary code to push a list of mock up available cuisines /////////////
-        List<Cuisine> avaCuisinesList = new ArrayList<>();
-        avaCuisinesList.add(new Cuisine("Indian"));
-        avaCuisinesList.add(new Cuisine("Chinese"));
-        avaCuisinesList.add(new Cuisine("Thai"));
+        List<String> avaCuisinesList = new ArrayList<>();
+        avaCuisinesList.add("Indian");
+        avaCuisinesList.add("Chinese");
+        avaCuisinesList.add("Thai");
         mHostDatabaseReference.child("avaCuisineList").setValue(avaCuisinesList);
         //////////////////////////////////////////////////////////////////////////////////
 
@@ -95,8 +95,8 @@ public class CuisineActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     // TODO: Get cuisine and convert it into a Cuisine object & store it in checkBoxAdapter
                     try{
-                        Cuisine cuisine = dataSnapshot.getValue(Cuisine.class);
-                        Log.i("Logcat", "Adapter add a cuisine: " + cuisine.getText());
+                        String cuisine = dataSnapshot.getValue(String.class);
+                        Log.i("Logcat", "Adapter add a cuisine: " + cuisine);
                         checkBoxAdapter.add(cuisine);
                         Log.i("Logcat", "getCount = " + String.valueOf((checkBoxAdapter.getCount())));
                     }catch(RuntimeException ex){
