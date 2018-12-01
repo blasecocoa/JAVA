@@ -25,15 +25,30 @@
         android:id="@+id/cuisineListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_cuisine"/>
+        android:layout_centerInParent="true"
+        tools:listitem="@layout/item_cuisine" />
 
 
     <Button
         android:id="@+id/set_cuisine_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+        android:layout_alignBottom="@+id/cuisineListView"
+        android:layout_alignEnd="@+id/cuisineListView"
         android:layout_gravity="bottom"
         android:text="@string/done_2"
-        android:textSize="18sp"/>
+
+        android:layout_width="117dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/next"
+        android:fontFamily="casual"
+        android:textColor="@android:color/background_light"
+        android:textStyle="bold"
+        />
+
+
+    android:textSize="18sp" />
 
 </RelativeLayout>
