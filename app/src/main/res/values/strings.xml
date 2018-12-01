@@ -139,4 +139,6 @@
     <string name="todo3">TODO</string>
     <string name="description">Description</string>
     <string name="title_activity_maps">Map</string>
+    <string name="search_place">search place</string>
+    <string name="waiting_for">Waiting for your friends...</string>
 </resources>

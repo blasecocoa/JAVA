@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@android:color/background_light"
     tools:context=".CuisineActivity">
 
     <!--<TextView-->
@@ -24,16 +25,26 @@
     <ListView
         android:id="@+id/cuisineListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_cuisine"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        tools:listitem="@layout/item_cuisine" />
 
 
     <Button
         android:id="@+id/set_cuisine_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="102dp"
+        android:layout_height="39dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:fontFamily="casual"
+        android:textColor="@android:color/background_light"
+        android:textStyle="bold"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="56dp"
+        android:background="@drawable/next"
         android:text="@string/done_2"
-        android:textSize="18sp"/>
+        android:textSize="18sp" />
 
 </RelativeLayout>

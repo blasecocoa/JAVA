@@ -1,7 +1,6 @@
 package com.example.nonchalantcocoa.java1d;
 
 import android.content.Intent;
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,7 +45,7 @@ public class HostWaitActivity extends AppCompatActivity {
 
         numOfPplTextView = findViewById(R.id.numOfPplTextView);
 
-        TextView textViewSessionCode = findViewById(R.id.textview_session_code);
+        TextView textViewSessionCode = findViewById(R.id.session_code);
         textViewSessionCode.setText(g.getHostName());
 
         Log.i(TAG, "You are in hostWaiting");
@@ -94,7 +93,7 @@ public class HostWaitActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_scrolling, menu);
+        inflater.inflate(R.menu.menu_location, menu);
         return true;
     }
 

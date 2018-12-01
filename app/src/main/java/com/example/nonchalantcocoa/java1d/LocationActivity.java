@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.app.Activity;
+import android.view.Menu;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -91,6 +93,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
     EditText mapSearchBox;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,13 +111,13 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View v) {
                 // TODO: Let user choose a location (Currently only send the current location to Firebase)
 
-                hostName = MainActivity.mUsername.toUpperCase().replaceAll("\\s+","") + createID();
+                hostName = MainActivity.mUsername.toUpperCase().replaceAll("\\s+", "") + createID();
                 // Set global variable hostName as current userName
                 Globals g = Globals.getInstance();
                 g.setHostName(hostName); //formated hostName
-                location = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
-                users = new HashMap<String,Boolean>();
-                users.put(MainActivity.mUsername,true);
+                location = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                users = new HashMap<String, Boolean>();
+                users.put(MainActivity.mUsername, true);
                 radius = radiusBar.getProgress() / 5.0;
 
                 Host host = new Host(location, users, radius);
@@ -123,6 +126,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                 startActivity(intent);
             }
         });
+
 
         // Map
         mapView = findViewById(R.id.map);
@@ -161,6 +165,8 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
 
     }
+
+
     public static synchronized String createID()
     {
         return String.valueOf(idCounter++);
