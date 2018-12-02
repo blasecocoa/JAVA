@@ -130,26 +130,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 hostName = textEditCode.getText().toString();
-                boolean hasCode = dataSnapshot.hasChild(hostName);
-                Toast.makeText(MainActivity.this,
-                        "hasCode = " + hasCode,
-                        Toast.LENGTH_LONG).show();
-                Log.i(TAG, "hasCode = " + hasCode);
+                if (!hostName.isEmpty()) {
+                    boolean hasCode = dataSnapshot.hasChild(hostName);
+                    Log.i(TAG, "hasCode = " + hasCode);
 
-                if (hasCode) {
-                    // Set hostName in Globals
-                    Globals g = Globals.getInstance();
-                    g.setHostName(hostName);
-                    // Append user_ls with current user
-                    mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
+                    if (hasCode) {
+                        // Set hostName in Globals
+                        Globals g = Globals.getInstance();
+                        g.setHostName(hostName);
+                        Log.i(TAG, "hostName = " + g.getHostName());
+                        // Append user_ls with current user
+                        mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
 
-                    Intent intent = new Intent(MainActivity.this, WaitActivity.class);
-                    startActivity(intent);
+                        Intent intent = new Intent(MainActivity.this, WaitActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MainActivity.this,
+                                "Session does not exist",
+                                Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(MainActivity.this,
-                            "Session does not exist",
+                            "Please enter a session code",
                             Toast.LENGTH_LONG).show();
                 }
+
             }
 
             @Override
