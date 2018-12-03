@@ -34,6 +34,7 @@ public class ResultActivity extends AppCompatActivity {
     private DatabaseReference mResultDatabaseReference;
 
     private ValueEventListener mValueEventListener;
+    private ValueEventListener mCounterEventListener;
 
     private boolean allowBack = false;
     public final String TAG = "Logcat";
@@ -80,7 +81,8 @@ public class ResultActivity extends AppCompatActivity {
         nextChoiceButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                showNextUI();
+                shopCounter += 1;
+                mHostDatabaseReference.child("shopCounter").setValue(shopCounter);
             }
         });
 
@@ -101,7 +103,6 @@ public class ResultActivity extends AppCompatActivity {
 
     private void showNextUI() {
         // Update UI for next shop
-        shopCounter += 1;
         Log.i(TAG, "shopCounter: " + shopCounter);
         if (!shopList.isEmpty()) {
             shopCounter = shopCounter % shopList.size();
@@ -113,6 +114,7 @@ public class ResultActivity extends AppCompatActivity {
                     .into(shopImageView);
         }
     }
+
     private void attachDatabaseReadListener(){
         if (mValueEventListener == null) {
             mValueEventListener = new ValueEventListener() {
@@ -159,6 +161,23 @@ public class ResultActivity extends AppCompatActivity {
                 }
             };
             mResultDatabaseReference.addValueEventListener(mValueEventListener);
+
+        // listener for shopCounter
+        if (mCounterEventListener == null) {
+            mCounterEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Update shopCounter & update image and text
+                    shopCounter = dataSnapshot.getValue(Integer.class);
+                    showNextUI();
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // ...
+                }
+            };
+            mHostDatabaseReference.child("shopCounter").addValueEventListener(mCounterEventListener);
+        }
         }
     }
 
@@ -166,6 +185,10 @@ public class ResultActivity extends AppCompatActivity {
         if (mValueEventListener != null) {
             mResultDatabaseReference.removeEventListener(mValueEventListener);
             mValueEventListener = null;
+        }
+        if (mCounterEventListener != null) {
+            mHostDatabaseReference.child("shopCounter").removeEventListener(mCounterEventListener);
+            mCounterEventListener = null;
         }
     }
 
