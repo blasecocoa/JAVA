@@ -1,6 +1,7 @@
 package com.example.nonchalantcocoa.java1d;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import net.glxn.qrgen.android.QRCode;
 
 import java.util.Map;
 
@@ -55,6 +59,9 @@ public class HostWaitActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mSessionDatabaseReference = mFirebaseDatabase.getReference().child("Sessions");
         mUsersDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("users");
+        Bitmap myBitmap = QRCode.from(g.getHostName()).bitmap();
+        ImageView myImage = (ImageView) findViewById(R.id.imageView);
+        myImage.setImageBitmap(myBitmap);
 
         attachDatabaseReadListener();
     }
@@ -119,6 +126,7 @@ public class HostWaitActivity extends AppCompatActivity {
     public void goToPrice(View view) {
         // send a start signal to database & go to PriceActivity
         mSessionDatabaseReference.child(g.getHostName()).child("signal").child("start").setValue(true);
+        mSessionDatabaseReference.child(g.getHostName()).child("status").setValue("ongoing");
         Intent intent = new Intent(this, PriceActivity.class);
         startActivity(intent);
     }
