@@ -42,7 +42,26 @@ public class PriceActivity extends AppCompatActivity {
     public void go_to_wait_price(View view) {
         // Get price range from seekBar
         int minPrice = seekBar.getSecondaryProgress() + 5;
-        int maxPrice = seekBar.getProgress() * 5;
+        int maxPrice;
+        switch(seekBar.getProgress()){
+            case 0:
+                maxPrice = 5;
+                break;
+            case 1:
+                maxPrice = 10;
+                break;
+            case 2:
+                maxPrice = 25;
+                break;
+            case 3:
+                maxPrice = 50;
+                break;
+            case 4:
+                maxPrice = 100;
+                break;
+            default:
+                maxPrice = 25;
+        }
         // push a Price object
         price = new Price(maxPrice,minPrice);
         mHostDatabaseReference.child("priceList").child(MainActivity.mUsername + "_price").setValue(price);
