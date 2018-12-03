@@ -34,6 +34,7 @@ public class ResultActivity extends AppCompatActivity {
     private DatabaseReference mResultDatabaseReference;
 
     private ValueEventListener mValueEventListener;
+    private ValueEventListener mCounterEventListener;
 
     private boolean allowBack = false;
     public final String TAG = "Logcat";
@@ -80,28 +81,28 @@ public class ResultActivity extends AppCompatActivity {
         nextChoiceButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                showNextUI();
+                shopCounter += 1;
+                mHostDatabaseReference.child("shopCounter").setValue(shopCounter);
             }
         });
 
         ///////////// Push mock up resultList //////////////////
-//        List<Shop> resultList = new ArrayList<>();
-//        Shop shop1 = new Shop("Keisuke", "Japanese",
-//                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/keisuke.png?alt=media&token=0c3e0c72-c446-4427-ab30-0ab5439f28f5"
-//                ,new LatLng(37.4219983,-122.084), "15-20", "Ramen");
-//        Shop shop2 = new Shop("Macdooners", "Fast Food",
-//                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/mcdonalds.png?alt=media&token=55833f4a-bd8d-4362-b3b7-ddb590ebb31e"
-//                ,new LatLng(37.4219983,-122.084), "10-15", "you sin if you eat here \n urfat");
-//        resultList.add(shop1);
-//        resultList.add(shop2);
-//        mResultDatabaseReference.setValue(resultList);
+        List<Shop> resultList = new ArrayList<>();
+        Shop shop1 = new Shop("Keisuke", "Japanese",
+                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/keisuke.png?alt=media&token=0c3e0c72-c446-4427-ab30-0ab5439f28f5"
+                ,new LatLng(37.4219983,-122.084), "15-20", "Ramen");
+        Shop shop2 = new Shop("Macdooners", "Fast Food",
+                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/mcdonalds.png?alt=media&token=55833f4a-bd8d-4362-b3b7-ddb590ebb31e"
+                ,new LatLng(37.4219983,-122.084), "10-15", "you sin if you eat here \n urfat");
+        resultList.add(shop1);
+        resultList.add(shop2);
+        mResultDatabaseReference.setValue(resultList);
         ////////////////////////////////////////////////////////
 
     }
 
     private void showNextUI() {
         // Update UI for next shop
-        shopCounter += 1;
         Log.i(TAG, "shopCounter: " + shopCounter);
         if (!shopList.isEmpty()) {
             shopCounter = shopCounter % shopList.size();
@@ -113,6 +114,7 @@ public class ResultActivity extends AppCompatActivity {
                     .into(shopImageView);
         }
     }
+
     private void attachDatabaseReadListener(){
         if (mValueEventListener == null) {
             mValueEventListener = new ValueEventListener() {
@@ -159,6 +161,23 @@ public class ResultActivity extends AppCompatActivity {
                 }
             };
             mResultDatabaseReference.addValueEventListener(mValueEventListener);
+
+        // listener for shopCounter
+        if (mCounterEventListener == null) {
+            mCounterEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Update shopCounter & update image and text
+                    shopCounter = dataSnapshot.getValue(Integer.class);
+                    showNextUI();
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // ...
+                }
+            };
+            mHostDatabaseReference.child("shopCounter").addValueEventListener(mCounterEventListener);
+        }
         }
     }
 
@@ -166,6 +185,10 @@ public class ResultActivity extends AppCompatActivity {
         if (mValueEventListener != null) {
             mResultDatabaseReference.removeEventListener(mValueEventListener);
             mValueEventListener = null;
+        }
+        if (mCounterEventListener != null) {
+            mHostDatabaseReference.child("shopCounter").removeEventListener(mCounterEventListener);
+            mCounterEventListener = null;
         }
     }
 
