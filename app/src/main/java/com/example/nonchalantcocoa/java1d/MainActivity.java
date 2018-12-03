@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText textEditCode;
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
-
+    private ImageView mQR;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mSessionDatabaseReference;
     private ChildEventListener mChildEventListener;
@@ -55,7 +56,13 @@ public class MainActivity extends AppCompatActivity {
         mSessionDatabaseReference = mFirebaseDatabase.getReference().child("Sessions");
 
         textEditCode =findViewById(R.id.textEditCode);
+        mQR= (ImageView)findViewById(R.id.qr_scanner);
+        mQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
         // TODO: 1.4 Add a AuthStateListener & attach it in onResume()
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
