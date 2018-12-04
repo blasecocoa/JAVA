@@ -3,6 +3,8 @@ package com.example.nonchalantcocoa.java1d;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,20 +28,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.google.zxing.Result;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+//import javax.xml.transform.Result;
+
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler{
     private EditText textEditCode;
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
-    private ImageView mQR;
+
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mSessionDatabaseReference;
     private ChildEventListener mChildEventListener;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-
+    private ZXingScannerView mScannerView;
     public static String mUsername;
     private static String hostName;
 
@@ -56,13 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mSessionDatabaseReference = mFirebaseDatabase.getReference().child("Sessions");
 
         textEditCode =findViewById(R.id.textEditCode);
-        mQR= (ImageView)findViewById(R.id.qr_scanner);
-        mQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
         // TODO: 1.4 Add a AuthStateListener & attach it in onResume()
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -92,12 +92,23 @@ public class MainActivity extends AppCompatActivity {
         };
 
     }
+    public void onClick(View v) {
+        mScannerView= new ZXingScannerView(this);
+        setContentView(mScannerView);
+        mScannerView.setResultHandler(MainActivity.this);
+        mScannerView.startCamera();
 
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_scrolling, menu);
         return true;
+    }
+    public void OnBackPressed(){
+        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+        startActivity(intent);
+
     }
 
     @Override
@@ -188,12 +199,15 @@ public class MainActivity extends AppCompatActivity {
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
+        mScannerView.stopCamera();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
     }
 
     private void onSignedInInitialized(String username) {
@@ -202,5 +216,59 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSignOutCleanup() {
         mUsername = ANONYMOUS;
+    }
+
+    @Override
+    public void handleResult(final Result result) {
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        builder.setTitle("Scan QR");
+        mSessionDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                hostName = result.getText().toString();
+                if (!hostName.isEmpty()) {
+                    boolean hasCode = dataSnapshot.hasChild(hostName);
+                    Log.i(TAG, "hasCode = " + hasCode);
+
+                    if (hasCode) {
+                        String status = dataSnapshot.child(hostName).child("status").getValue(String.class);
+                        Log.i(TAG, "Joined a session: status = " + status);
+                        if (status.equals("open")){
+                            // Set hostName in Globals
+                            Globals g = Globals.getInstance();
+                            g.setHostName(hostName);
+                            Log.i(TAG, "hostName = " + g.getHostName());
+                            // Append user_ls with current user
+                            mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
+
+                            Intent intent = new Intent(MainActivity.this, WaitActivity.class);
+                            startActivity(intent);
+                        } else{
+                            Toast.makeText(MainActivity.this,
+                                    "Session is " + status + ", too late to join. =(",
+                                    Toast.LENGTH_LONG).show();
+                            Log.i(TAG, "Session is not allowed to join now: status = " + status);
+                        }
+
+                    } else {
+                        Toast.makeText(MainActivity.this,
+                                "Session does not exist",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            "Please scan a valid QR session code",
+                            Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
+
+
     }
 }
