@@ -199,8 +199,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
-        mScannerView.stopCamera();
-
+        if(mScannerView!=null) {
+            mScannerView.stopCamera();
+        }
     }
 
     @Override
