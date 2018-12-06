@@ -1,9 +1,14 @@
 package com.example.nonchalantcocoa.java1d;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,8 +42,11 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler{
     private EditText textEditCode;
+    private long lastClickTime = 0;
     public static final String ANONYMOUS = "anonymous";
     private static final int RC_SIGN_IN = 1;
+    private static final int PERMISSIONS_REQUEST_CAMERA = 1;
+    private boolean mCameraPermissionGranted;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mSessionDatabaseReference;
@@ -93,11 +101,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     }
     public void onClick(View v) {
-        mScannerView= new ZXingScannerView(this);
-        setContentView(mScannerView);
-        mScannerView.setResultHandler(MainActivity.this);
-        mScannerView.startCamera();
-
+        if (mCameraPermissionGranted) {
+            mScannerView = new ZXingScannerView(this);
+            setContentView(mScannerView);
+            mScannerView.setResultHandler(MainActivity.this);
+            mScannerView.startCamera();
+        } else {
+            getCameraPermission();
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -105,11 +116,56 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         inflater.inflate(R.menu.menu_scrolling, menu);
         return true;
     }
-    public void OnBackPressed(){
-        Intent intent = new Intent(MainActivity.this, MainActivity.class);
-        startActivity(intent);
 
+    @Override
+    public void onBackPressed() {
+        if(mScannerView!=null) {
+            mScannerView.stopCamera();
+            mScannerView = null;
+            setContentView(R.layout.activity_main);
+        } else {
+            super.onBackPressed();
+        }
     }
+
+    private void getCameraPermission() {
+        /*
+         * Request camera permission, so that we can access camera of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            mCameraPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSIONS_REQUEST_CAMERA);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        mCameraPermissionGranted = false;
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mCameraPermissionGranted = true;
+                    mScannerView= new ZXingScannerView(this);
+                    setContentView(mScannerView);
+                    mScannerView.setResultHandler(MainActivity.this);
+                    mScannerView.startCamera();
+                }
+            }
+        }
+    }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -124,7 +180,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     public void create(View view) {
-
+        // preventing double, using threshold of 1000 ms
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         Intent intent = new Intent(this, LocationActivity.class);
         startActivity(intent);
     }

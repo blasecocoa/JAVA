@@ -3,6 +3,7 @@ package com.example.nonchalantcocoa.java1d;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class HostWaitActivity extends AppCompatActivity {
     private ValueEventListener usersEventListener;
 
     private int numOfPpl;
+    private long lastClickTime = 0;
 
     TextView numOfPplTextView;
     Globals g;
@@ -124,6 +126,11 @@ public class HostWaitActivity extends AppCompatActivity {
     }
 
     public void goToPrice(View view) {
+        // preventing double, using threshold of 1000 ms
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
         // send a start signal to database & go to PriceActivity
         mSessionDatabaseReference.child(g.getHostName()).child("signal").child("start").setValue(true);
         mSessionDatabaseReference.child(g.getHostName()).child("status").setValue("ongoing");

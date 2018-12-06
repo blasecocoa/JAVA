@@ -103,6 +103,9 @@ public class ResultActivity extends AppCompatActivity {
 
     private void showNextUI() {
         // Update UI for next shop
+        Toast.makeText(this,
+                "Your friend had clicked next choice",
+                Toast.LENGTH_LONG).show();
         Log.i(TAG, "shopCounter: " + shopCounter);
         if (!shopList.isEmpty()) {
             shopCounter = shopCounter % shopList.size();

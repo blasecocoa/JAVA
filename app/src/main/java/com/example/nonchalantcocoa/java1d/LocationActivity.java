@@ -9,6 +9,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.PersistableBundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -84,6 +85,8 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
     public final String TAG = "Logcat";
 
+    private long lastClickTime = 0;
+
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
@@ -150,8 +153,11 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         locationNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Let user choose a location (Currently only send the current location to Firebase)
-
+                // preventing double, using threshold of 1000 ms
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+                lastClickTime = SystemClock.elapsedRealtime();
                 hostName = MainActivity.mUsername.toUpperCase().replaceAll("\\s+","") + createID();
                 // Set global variable hostName as current userName
                 Globals g = Globals.getInstance();
@@ -328,7 +334,12 @@ public void hideSoftkeyboard(){
                 }
             }
         }
-        updateLocationUI();
+        try {
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        } catch (SecurityException e)  {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     private void getDeviceLocation() {
