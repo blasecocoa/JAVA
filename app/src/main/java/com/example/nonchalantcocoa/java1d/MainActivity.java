@@ -125,8 +125,10 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             setContentView(R.layout.activity_main);
         } else {
             super.onBackPressed();
+            this.finishAffinity();
         }
     }
+
 
     private void getCameraPermission() {
         /*
@@ -222,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                             Log.i(TAG, "hostName = " + g.getHostName());
                             // Append user_ls with current user
                             mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
-
+                            g.setHost(true);
                             Intent intent = new Intent(MainActivity.this, WaitActivity.class);
                             startActivity(intent);
                         } else{
@@ -301,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                             Log.i(TAG, "hostName = " + g.getHostName());
                             // Append user_ls with current user
                             mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
-
+                            g.setHost(true);
                             Intent intent = new Intent(MainActivity.this, WaitActivity.class);
                             startActivity(intent);
                         } else{
@@ -321,15 +323,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                             "Please scan a valid QR session code",
                             Toast.LENGTH_LONG).show();
                 }
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // ...
             }
         });
-
-
     }
 }

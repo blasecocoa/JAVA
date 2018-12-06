@@ -1,8 +1,10 @@
 package com.example.nonchalantcocoa.java1d;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,11 +28,13 @@ import java.util.Map;
 public class WaitActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mHostDatabaseReference;
     private DatabaseReference mStartDatabaseReference;
     private DatabaseReference mUsersDatabaseReference;
 
     private ValueEventListener mValueEventListener;
     private ValueEventListener usersEventListener;
+    private ValueEventListener mStatusEventListener;
 
     private int numOfPpl;
 
@@ -48,6 +52,7 @@ public class WaitActivity extends AppCompatActivity {
         numOfPplTextView = findViewById(R.id.numOfPplTextView);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName());
         mStartDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("signal").child("start");
         mUsersDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName()).child("users");
 
@@ -101,6 +106,31 @@ public class WaitActivity extends AppCompatActivity {
             mUsersDatabaseReference.addValueEventListener(usersEventListener); // Listen to num of ppl
         }
 
+        if (mStatusEventListener == null) {
+            // Create a listener to check if the go_to_cuisine signal is true
+            mStatusEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String status = (String) dataSnapshot.getValue();
+
+                    if (status.equals("close")) {
+                        // Force user to quit
+                        Toast.makeText(getApplicationContext(),
+                                "Session is closed",
+                                Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(WaitActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            mHostDatabaseReference.child("status").addValueEventListener(mStatusEventListener);
+        }
+
     }
 
     private void detachDatabaseReadListener(){
@@ -111,6 +141,10 @@ public class WaitActivity extends AppCompatActivity {
         if (usersEventListener != null) {
             mUsersDatabaseReference.removeEventListener(usersEventListener);
             usersEventListener = null;
+        }
+        if (mStatusEventListener != null) {
+            mHostDatabaseReference.child("status").removeEventListener(mStatusEventListener);
+            mStatusEventListener = null;
         }
     }
 
@@ -137,6 +171,49 @@ public class WaitActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (g.isHost()) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Closing Session: " + g.getHostName())
+                    .setMessage("Are you sure you want to close this session and force everyone out?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).removeValue();
+                            mHostDatabaseReference.child("status").setValue("close");
+                            Intent intent = new Intent(WaitActivity.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Quiting Session: " + g.getHostName())
+                    .setMessage("Are you sure you want to quit this session?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).removeValue();
+                            Intent intent = new Intent(WaitActivity.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        }
+
     }
 
 }

@@ -1,9 +1,11 @@
 package com.example.nonchalantcocoa.java1d;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,13 +50,14 @@ public class ResultActivity extends AppCompatActivity {
     private List<Shop> shopList = new ArrayList<>();
     private Shop currentShop;
     private int shopCounter = 0;
+    private Globals g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        Globals g = Globals.getInstance();
+        g = Globals.getInstance();
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mHostDatabaseReference = mFirebaseDatabase.getReference().child("Sessions").child(g.getHostName());
@@ -72,7 +75,9 @@ public class ResultActivity extends AppCompatActivity {
         goMainButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                mHostDatabaseReference.child("status").setValue("close");
+                if (g.isHost()){
+                    mHostDatabaseReference.child("status").setValue("close");
+                }
                 Intent intent = new Intent(ResultActivity.this,MainActivity.class);
                 startActivity(intent);
             }
@@ -82,6 +87,7 @@ public class ResultActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 shopCounter += 1;
+                shopCounter = shopCounter % shopList.size();
                 mHostDatabaseReference.child("shopCounter").setValue(shopCounter);
             }
         });
@@ -103,12 +109,8 @@ public class ResultActivity extends AppCompatActivity {
 
     private void showNextUI() {
         // Update UI for next shop
-        Toast.makeText(this,
-                "Your friend had clicked next choice",
-                Toast.LENGTH_LONG).show();
         Log.i(TAG, "shopCounter: " + shopCounter);
         if (!shopList.isEmpty()) {
-            shopCounter = shopCounter % shopList.size();
             currentShop = shopList.get(shopCounter);
             shopNameTextView.setText(currentShop.getName());
             shopDescripTextView.setText(currentShop.getTags());
@@ -172,6 +174,9 @@ public class ResultActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // Update shopCounter & update image and text
                     shopCounter = dataSnapshot.getValue(Integer.class);
+                    Toast.makeText(ResultActivity.this,
+                            "Your friend had clicked next choice",
+                            Toast.LENGTH_LONG).show();
                     showNextUI();
                 }
                 @Override
@@ -203,12 +208,42 @@ public class ResultActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!allowBack) {
-            Toast.makeText(this,
-                    "Not allowed to go back",
-                    Toast.LENGTH_LONG).show();
+        if (g.isHost()) {
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Closing Session: " + g.getHostName())
+                    .setMessage("Are you sure you want to leave this session?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // No need remove user from users list
+                            mHostDatabaseReference.child("status").setValue("close");
+                            Intent intent = new Intent(ResultActivity.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         } else {
-            super.onBackPressed();
+            new AlertDialog.Builder(this)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Quiting Session: " + g.getHostName())
+                    .setMessage("Are you sure you want to quit this session?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // No need remove user from users list
+                            Intent intent = new Intent(ResultActivity.this,MainActivity.class);
+                            startActivity(intent);
+                        }
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
         }
+
     }
 }

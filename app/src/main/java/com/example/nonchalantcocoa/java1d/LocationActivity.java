@@ -169,6 +169,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
                 Host host = new Host(location, users, radius);
                 mSessionDatabaseReference.child(g.getHostName()).setValue(host);
+                g.setHost(true);
                 Intent intent = new Intent(LocationActivity.this, HostWaitActivity.class);
                 startActivity(intent);
             }
