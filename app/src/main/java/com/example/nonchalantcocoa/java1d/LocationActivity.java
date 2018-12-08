@@ -91,6 +91,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     public static String hostName;
+    private Globals g;
 
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
@@ -160,7 +161,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                 lastClickTime = SystemClock.elapsedRealtime();
                 hostName = MainActivity.mUsername.toUpperCase().replaceAll("\\s+","") + createID();
                 // Set global variable hostName as current userName
-                Globals g = Globals.getInstance();
+                g = Globals.getInstance();
                 g.setHostName(hostName); //formated hostName
                 location = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
                 users = new HashMap<String,Boolean>();

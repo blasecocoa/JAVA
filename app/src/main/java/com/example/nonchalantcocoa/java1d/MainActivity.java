@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private ZXingScannerView mScannerView;
     public static String mUsername;
     private static String hostName;
+    private Globals g;
 
     public final String TAG = "Logcat";
 
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                         Log.i(TAG, "Joined a session: status = " + status);
                         if (status.equals("open")){
                             // Set hostName in Globals
-                            Globals g = Globals.getInstance();
+                            g = Globals.getInstance();
                             g.setHostName(hostName);
                             Log.i(TAG, "hostName = " + g.getHostName());
                             // Append user_ls with current user

@@ -68,7 +68,6 @@ public class ResultActivity extends AppCompatActivity {
         nextChoiceButton = findViewById(R.id.nextChoiceButton);
         shopNameTextView = findViewById(R.id.shopNameTextView);
         shopDescripTextView = findViewById(R.id.shopDescriptionTextView);
-        shopImageView = findViewById(R.id.shopImageView);
 
         attachDatabaseReadListener();
 

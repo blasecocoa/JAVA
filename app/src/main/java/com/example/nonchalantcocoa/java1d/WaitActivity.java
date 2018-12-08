@@ -96,6 +96,8 @@ public class WaitActivity extends AppCompatActivity {
                     } catch (RuntimeException ex) {
                         ex.printStackTrace();
                         Log.i("Logcat","Cannot count number of ppl");
+
+
                     }
                 }
                 @Override

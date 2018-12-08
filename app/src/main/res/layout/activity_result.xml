@@ -18,24 +18,8 @@
         android:adjustViewBounds="false"
         android:contentDescription="@string/todo2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/shopImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/noun" />
-    <ImageView
-        android:id="@+id/shopImageView"
-        android:layout_width="282dp"
-        android:layout_height="293dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:contentDescription="@string/todo3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.247"
-        app:srcCompat="@drawable/thaiexpress16" />
-
 
     <ImageView
         android:id="@+id/imageView"
@@ -53,8 +37,7 @@
         app:layout_constraintHorizontal_bias="0.769"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/thai_logo" />
+        app:layout_constraintVertical_bias="0.0"/>
 
     <TextView
         android:id="@+id/textView"
@@ -84,7 +67,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shopImageView"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -101,7 +83,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shopImageView"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button

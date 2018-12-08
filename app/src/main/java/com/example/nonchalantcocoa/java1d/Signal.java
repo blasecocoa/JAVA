@@ -13,9 +13,7 @@ public class Signal {
 
     public Signal() {
         this.start = false;
-        this.go_to_cuisine = true;
-        this.go_to_result = true;
+        this.go_to_cuisine = false;
+        this.go_to_result = false;
     }
-
-
 }
