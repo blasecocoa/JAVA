@@ -93,16 +93,16 @@ public class ResultActivity extends AppCompatActivity {
         });
 
         ///////////// Push mock up resultList //////////////////
-        List<Shop> resultList = new ArrayList<>();
-        Shop shop1 = new Shop("Keisuke", "Japanese",
-                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/keisuke.png?alt=media&token=0c3e0c72-c446-4427-ab30-0ab5439f28f5"
-                ,new LatLng(37.4219983,-122.084), "15-20", "Ramen");
-        Shop shop2 = new Shop("Macdooners", "Fast Food",
-                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/mcdonalds.png?alt=media&token=55833f4a-bd8d-4362-b3b7-ddb590ebb31e"
-                ,new LatLng(37.4219983,-122.084), "10-15", "you sin if you eat here \n urfat");
-        resultList.add(shop1);
-        resultList.add(shop2);
-        mResultDatabaseReference.setValue(resultList);
+//        List<Shop> resultList = new ArrayList<>();
+//        Shop shop1 = new Shop("Keisuke", "Japanese",
+//                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/keisuke.png?alt=media&token=0c3e0c72-c446-4427-ab30-0ab5439f28f5"
+//                ,new LatLng(37.4219983,-122.084), "15-20", "Ramen");
+//        Shop shop2 = new Shop("Macdooners", "Fast Food",
+//                "https://firebasestorage.googleapis.com/v0/b/eatwhere-3090c.appspot.com/o/mcdonalds.png?alt=media&token=55833f4a-bd8d-4362-b3b7-ddb590ebb31e"
+//                ,new LatLng(37.4219983,-122.084), "10-15", "you sin if you eat here \n urfat");
+//        resultList.add(shop1);
+//        resultList.add(shop2);
+//        mResultDatabaseReference.setValue(resultList);
         ////////////////////////////////////////////////////////
 
     }

@@ -65,11 +65,11 @@ public class CuisineActivity extends AppCompatActivity {
         cuisineListView.setAdapter(checkBoxAdapter);
 
         //////// Temporary code to push a list of mock up available cuisines /////////////
-        List<String> avaCuisinesList = new ArrayList<>();
-        avaCuisinesList.add("Indian");
-        avaCuisinesList.add("Chinese");
-        avaCuisinesList.add("Thai");
-        mHostDatabaseReference.child("avaCuisineList").setValue(avaCuisinesList);
+//        List<String> avaCuisinesList = new ArrayList<>();
+//        avaCuisinesList.add("Indian");
+//        avaCuisinesList.add("Chinese");
+//        avaCuisinesList.add("Thai");
+//        mHostDatabaseReference.child("avaCuisineList").setValue(avaCuisinesList);
         //////////////////////////////////////////////////////////////////////////////////
 
         attachDatabaseReadListener();
