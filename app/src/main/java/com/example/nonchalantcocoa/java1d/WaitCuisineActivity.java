@@ -128,7 +128,7 @@ public class WaitCuisineActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).removeValue();
+                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).setValue(false);
                             mHostDatabaseReference.child("status").setValue("close");
                             Intent intent = new Intent(WaitCuisineActivity.this,MainActivity.class);
                             startActivity(intent);
@@ -147,7 +147,7 @@ public class WaitCuisineActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).removeValue();
+                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).setValue(false);
                             Intent intent = new Intent(WaitCuisineActivity.this,MainActivity.class);
                             startActivity(intent);
                         }

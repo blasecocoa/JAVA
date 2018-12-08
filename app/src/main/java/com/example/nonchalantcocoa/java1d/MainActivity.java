@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                             Log.i(TAG, "hostName = " + g.getHostName());
                             // Append user_ls with current user
                             mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
-                            g.setHost(true);
+                            g.setHost(false);
                             Intent intent = new Intent(MainActivity.this, WaitActivity.class);
                             startActivity(intent);
                         } else{
