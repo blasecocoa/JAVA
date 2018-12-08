@@ -104,7 +104,6 @@ public class ResultActivity extends AppCompatActivity {
 //        resultList.add(shop2);
 //        mResultDatabaseReference.setValue(resultList);
         ////////////////////////////////////////////////////////
-
     }
 
     private void showNextUI() {
@@ -144,6 +143,15 @@ public class ResultActivity extends AppCompatActivity {
                             Log.i(TAG, "tags: " + tags);
                             Shop tempShop = new Shop(name, cuisine, imageID, location, price, tags);
                             shopList.add(tempShop);
+                        }
+                        if (shopList.isEmpty()) {
+                            // No need remove user from users list
+                            mHostDatabaseReference.child("status").setValue("close");
+                            Toast.makeText(getApplicationContext(),
+                                    "No available shops with given parameters",
+                                    Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(ResultActivity.this,MainActivity.class);
+                            startActivity(intent);
                         }
                         Log.i(TAG, "Get a shopList: " + shopList.toString());
                         currentShop = shopList.get(shopCounter);
@@ -217,7 +225,7 @@ public class ResultActivity extends AppCompatActivity {
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // No need remove user from users list
+                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).setValue(false);
                             mHostDatabaseReference.child("status").setValue("close");
                             Intent intent = new Intent(ResultActivity.this,MainActivity.class);
                             startActivity(intent);
@@ -235,7 +243,7 @@ public class ResultActivity extends AppCompatActivity {
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // No need remove user from users list
+                            mHostDatabaseReference.child("users").child(MainActivity.mUsername).setValue(false);
                             Intent intent = new Intent(ResultActivity.this,MainActivity.class);
                             startActivity(intent);
                         }

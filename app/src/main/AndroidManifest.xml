@@ -31,21 +31,38 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LocationActivity" />
-        <activity android:name=".WaitActivity" />
-        <activity android:name=".WaitPriceActivity" />
-        <activity android:name=".WaitCuisineActivity" />
-        <activity android:name=".PriceActivity" />
-        <activity android:name=".HostWaitActivity" />
-        <activity android:name=".CuisineActivity" />
-        <activity android:name=".ResultActivity" />
+        <activity
+            android:name=".LocationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WaitActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WaitPriceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WaitCuisineActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PriceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HostWaitActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CuisineActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ResultActivity"
+            android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

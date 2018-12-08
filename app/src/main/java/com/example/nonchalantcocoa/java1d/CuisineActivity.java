@@ -43,6 +43,7 @@ public class CuisineActivity extends AppCompatActivity {
 
     private Button setCuisineButton;
     private Globals g;
+    private int cuisineCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +81,24 @@ public class CuisineActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {// create a Cuisine object
                 Map<String,Boolean> cuisinesMap = checkBoxAdapter.getItemStateMap();
-                // TODO: get checkbox values in a loop
-                // push the Cuisine object
-                mHostDatabaseReference.child("cuisineList").child(MainActivity.mUsername + "_cuisines").setValue(cuisinesMap);
-                // go to wait_cuisine page
-                Intent intent = new Intent(CuisineActivity.this, WaitCuisineActivity.class);
-                startActivity(intent);
+                cuisineCount = 0;
+                for(boolean checked:cuisinesMap.values()){
+                    if (checked==true){
+                        cuisineCount++;
+                    }
+                }
+                if(cuisineCount != 0){
+                    // push the Cuisine object
+                    mHostDatabaseReference.child("cuisineList").child(MainActivity.mUsername + "_cuisines").setValue(cuisinesMap);
+                    // go to wait_cuisine page
+                    Intent intent = new Intent(CuisineActivity.this, WaitCuisineActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(),
+                            "Please select at least 1 cuisine",
+                            Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
@@ -194,6 +207,7 @@ public class CuisineActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
 
                             mHostDatabaseReference.child("users").child(MainActivity.mUsername).setValue(false);
+
                             Intent intent = new Intent(CuisineActivity.this,MainActivity.class);
                             startActivity(intent);
                         }

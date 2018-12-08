@@ -192,24 +192,13 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
 
-    public void join_session(View view) {
-        textEditCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    return true;
-                }
-                return false;
-            }
-        });
-
-    }
     public void wait_page(View view) {
         // Check if the session exist
+        hostName = textEditCode.getText().toString();
         mSessionDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                hostName = textEditCode.getText().toString();
+
                 if (!hostName.isEmpty()) {
                     boolean hasCode = dataSnapshot.hasChild(hostName);
                     Log.i(TAG, "hasCode = " + hasCode);
@@ -224,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                             Log.i(TAG, "hostName = " + g.getHostName());
                             // Append user_ls with current user
                             mSessionDatabaseReference.child(g.getHostName()).child("users").child(MainActivity.mUsername).setValue(true);
-                            g.setHost(true);
+                            g.setHost(false);
                             Intent intent = new Intent(MainActivity.this, WaitActivity.class);
                             startActivity(intent);
                         } else{
@@ -285,10 +274,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     public void handleResult(final Result result) {
         AlertDialog.Builder builder= new AlertDialog.Builder(this);
         builder.setTitle("Scan QR");
+        hostName = result.getText().toString();
         mSessionDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                hostName = result.getText().toString();
+
                 if (!hostName.isEmpty()) {
                     boolean hasCode = dataSnapshot.hasChild(hostName);
                     Log.i(TAG, "hasCode = " + hasCode);

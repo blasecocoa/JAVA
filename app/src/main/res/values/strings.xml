@@ -107,7 +107,7 @@
     <string name="action_settings">Settings</string>
     <string name="next">next</string>
     <string name="locatioset">Set your Preferred Location</string>
-    <string name="radius">Set your Radius</string>
+    <string name="radius">Set your Radius (meter)</string>
     <string name="join_a_session">Join a session</string>
     <string name="create_a_session">Create a Session</string>
     <string name="code">enter code</string>

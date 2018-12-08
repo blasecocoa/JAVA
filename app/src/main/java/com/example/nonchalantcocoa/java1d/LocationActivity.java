@@ -95,7 +95,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private static final int DEFAULT_ZOOM = 17;
+    private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
 
@@ -140,7 +140,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
              @Override
              public void onProgressChanged(SeekBar seekBar, int progress,boolean fromUser) {
                  // TODO Auto-generated method stub
-                 radius = radiusBar.getProgress() + 150;
+                 radius = radiusBar.getProgress() + 300;
                  circle.setRadius(radius);
                  radiusTextView.setText(String.valueOf(radius));
 //                 t1.setTextSize(progress);
@@ -165,7 +165,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                 location = new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude());
                 users = new HashMap<String,Boolean>();
                 users.put(MainActivity.mUsername,true);
-                radius = radiusBar.getProgress() / 5.0;
+                radius = radiusBar.getProgress() + 300;
 
                 Host host = new Host(location, users, radius);
                 mSessionDatabaseReference.child(g.getHostName()).setValue(host);
@@ -226,7 +226,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         }
         if(list.size()>0){
             Address address=list.get(0);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(address.getLatitude(),
                             address.getLongitude()), DEFAULT_ZOOM));
             hideSoftkeyboard();
@@ -357,7 +357,7 @@ public void hideSoftkeyboard(){
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location)task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                             String snippet = String.format(Locale.getDefault(),
@@ -372,14 +372,14 @@ public void hideSoftkeyboard(){
                             init();
                             circle = mMap.addCircle(new CircleOptions()
                                     .center(new LatLng(mLastKnownLocation.getLatitude(),mLastKnownLocation.getLongitude()))
-                                    .radius(150)
+                                    .radius(500)
                                     .strokeWidth(0)
                                     .fillColor(0x220000FF));
 
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }

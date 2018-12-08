@@ -26,6 +26,7 @@ public class WaitPriceActivity extends AppCompatActivity {
     private ValueEventListener mStatusEventListener;
 
     private boolean allowBack = false;
+    private int shopCount = 0;
 
     Globals g;
 
@@ -56,9 +57,32 @@ public class WaitPriceActivity extends AppCompatActivity {
                     boolean go_to_cuisine = (boolean) dataSnapshot.getValue();
 
                     if (go_to_cuisine) {
-                        // go to CuisineActivity
-                        Intent intent = new Intent(WaitPriceActivity.this, CuisineActivity.class);
-                        startActivity(intent);
+                        // check if avaCuisinelist is empty
+                        shopCount = 0;
+                        mHostDatabaseReference.child("avaCuisineList").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                                    if (ds.getValue().toString().equals(0)){
+                                        // go to MainActivity
+                                        Intent intent = new Intent(WaitPriceActivity.this, MainActivity.class);
+                                        Toast.makeText(getApplicationContext(),
+                                                "No available shops with given parameters",
+                                                Toast.LENGTH_LONG).show();
+                                        startActivity(intent);
+                                    }
+                                    else {
+                                        // go to CuisineActivity
+                                        Intent intent = new Intent(WaitPriceActivity.this, CuisineActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                // ...
+                            }
+                        });
                     }
                 }
 

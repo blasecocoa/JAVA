@@ -41,7 +41,6 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/join_session"
         android:fontFamily="casual"
-        android:onClick="join_session"
         android:text="@string/join_a_session"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
