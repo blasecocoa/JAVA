@@ -68,6 +68,7 @@ public class ResultActivity extends AppCompatActivity {
         nextChoiceButton = findViewById(R.id.nextChoiceButton);
         shopNameTextView = findViewById(R.id.shopNameTextView);
         shopDescripTextView = findViewById(R.id.shopDescriptionTextView);
+        shopImageView = findViewById(R.id.shopImageView);
 
         attachDatabaseReadListener();
 
@@ -129,17 +130,12 @@ public class ResultActivity extends AppCompatActivity {
                             String name = ds.child("name").getValue(String.class);
                             Log.i(TAG, "name: " + name);
                             String cuisine = ds.child("cuisine").getValue(String.class);
-                            Log.i(TAG, "cuisine: " + cuisine);
                             String imageID = ds.child("imageID").getValue(String.class);
-                            Log.i(TAG, "imageID: " + imageID);
                             LatLng location = new LatLng(
                                     ds.child("location").child("latitude").getValue(Double.class),
                                     ds.child("location").child("longitude").getValue(Double.class));
-                            Log.i(TAG, "location: " + location.toString());
                             String price = ds.child("price").getValue(String.class);
-                            Log.i(TAG, "price: " + price);
                             String tags = ds.child("tags").getValue(String.class);
-                            Log.i(TAG, "tags: " + tags);
                             Shop tempShop = new Shop(name, cuisine, imageID, location, price, tags);
                             shopList.add(tempShop);
                         }
@@ -152,7 +148,6 @@ public class ResultActivity extends AppCompatActivity {
                             Intent intent = new Intent(ResultActivity.this,MainActivity.class);
                             startActivity(intent);
                         }
-                        Log.i(TAG, "Get a shopList: " + shopList.toString());
                         currentShop = shopList.get(shopCounter);
                         if (currentShop != null && shopCounter == 0) {
                             shopNameTextView.setText(currentShop.getName());

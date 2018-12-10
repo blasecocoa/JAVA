@@ -16,6 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WaitPriceActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
@@ -63,15 +66,29 @@ public class WaitPriceActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot ds : dataSnapshot.getChildren()){
-                                    if (ds.getValue().toString().equals(0)){
+                                    if (ds.getValue().toString().equals("0")){
                                         // go to MainActivity
-                                        Intent intent = new Intent(WaitPriceActivity.this, MainActivity.class);
                                         Toast.makeText(getApplicationContext(),
                                                 "No available shops with given parameters",
                                                 Toast.LENGTH_LONG).show();
-                                        startActivity(intent);
+                                        final Intent intent = new Intent(WaitPriceActivity.this, MainActivity.class);
+                                        Thread thread = new Thread(){
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    Thread.sleep(3500); // As I am using LENGTH_LONG in Toast
+                                                    startActivity(intent);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        };
+                                        thread.start();
                                     }
                                     else {
+                                        Toast.makeText(getApplicationContext(),
+                                                ds.getValue().toString(),
+                                                Toast.LENGTH_LONG).show();
                                         // go to CuisineActivity
                                         Intent intent = new Intent(WaitPriceActivity.this, CuisineActivity.class);
                                         startActivity(intent);
