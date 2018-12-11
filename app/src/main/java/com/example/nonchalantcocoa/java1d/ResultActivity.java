@@ -212,7 +212,7 @@ public class ResultActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (g.isHost()) {
             new AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(R.drawable.warn)
                     .setTitle("Closing Session: " + g.getHostName())
                     .setMessage("Are you sure you want to leave this session?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener()
@@ -230,7 +230,7 @@ public class ResultActivity extends AppCompatActivity {
                     .show();
         } else {
             new AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(R.drawable.warn)
                     .setTitle("Quiting Session: " + g.getHostName())
                     .setMessage("Are you sure you want to quit this session?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener()

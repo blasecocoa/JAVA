@@ -14,10 +14,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="140dp"
         android:adjustViewBounds="false"
         android:contentDescription="@string/todo2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/shopImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/noun" />
@@ -37,25 +37,6 @@
         app:srcCompat="@drawable/thaiexpress16" />
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="173dp"
-        android:layout_height="103dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/todo1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.769"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/thai_logo" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="157dp"
@@ -73,7 +54,7 @@
     <TextView
         android:id="@+id/shopNameTextView"
         android:layout_width="364dp"
-        android:layout_height="91dp"
+        android:layout_height="21dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -101,8 +82,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shopImageView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/shopNameTextView"
+        app:layout_constraintVertical_bias="0.071" />
 
     <Button
         android:id="@+id/goMainButton"
