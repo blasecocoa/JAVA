@@ -139,4 +139,6 @@
     <string name="todo3">TODO</string>
     <string name="description">Description</string>
     <string name="title_activity_maps">Map</string>
+    <string name="price">Price Level:</string>
+    <string name="cuisine_of_shop">Cuisine:</string>
 </resources>

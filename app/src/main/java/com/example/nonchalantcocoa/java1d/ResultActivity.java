@@ -46,6 +46,8 @@ public class ResultActivity extends AppCompatActivity {
     private TextView shopNameTextView;
     private TextView shopDescripTextView;
     private ImageView shopImageView;
+    private TextView cuisineTextview;
+    private TextView priceTextview;
 
     private List<Shop> shopList = new ArrayList<>();
     private Shop currentShop;
@@ -69,6 +71,10 @@ public class ResultActivity extends AppCompatActivity {
         shopNameTextView = findViewById(R.id.shopNameTextView);
         shopDescripTextView = findViewById(R.id.shopDescriptionTextView);
         shopImageView = findViewById(R.id.shopImageView);
+        cuisineTextview = findViewById(R.id.cuisineTextView);
+        priceTextview = findViewById(R.id.priceTextView);
+
+
 
         attachDatabaseReadListener();
 
@@ -113,6 +119,8 @@ public class ResultActivity extends AppCompatActivity {
             currentShop = shopList.get(shopCounter);
             shopNameTextView.setText(currentShop.getName());
             shopDescripTextView.setText(currentShop.getTags());
+            priceTextview.setText(currentShop.getCuisine());
+            cuisineTextview.setText(currentShop.getPrice());
             Glide.with(ResultActivity.this)
                     .load(currentShop.getImageID())
                     .into(shopImageView);
